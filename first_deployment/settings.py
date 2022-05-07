@@ -113,6 +113,8 @@ USE_TZ = True
 STATIC_ROOT = 'collect/'
 STATIC_URL = 'static/'
 
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
@@ -135,4 +137,11 @@ with open('ignore/project-settings.conf') as f:
     elif settings_value == "local":
         from .settings_local import *
 
-    
+    ALLOWED_HOSTS = []
+
+    if len(lines) > 2:
+        domain = lines[2].strip() 
+
+        if domain != "": 
+            ALLOWED_HOSTS.append(domain)
+
