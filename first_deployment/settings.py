@@ -11,21 +11,28 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+from sys import path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+
+PROJECT_NAME = "first_deployment"
+
+APP_LIST = [
+    "engine",
+    ]
+
+
+# Path mappings
+
+
+PROJECT_ROOT_DIR = Path(path[-1]) # Taken from a .pth file in virtual env
+
+ROOT_APP_DIR = PROJECT_ROOT_DIR / PROJECT_NAME
+
+ENGINE_APP_DIR = PROJECT_ROOT_DIR / APP_LIST[0]
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-t*iz62#lskl!8(!09y(((^u$3k38zjwkdi4^@$(t7%=c@#6v6j'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -37,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-]
+] + [f"{name}.apps.{name.capitalize()}Config" for name in APP_LIST]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -49,12 +56,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'first_deployment.urls'
+ROOT_URLCONF = PROJECT_NAME + '.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ENGINE_APP_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -67,18 +74,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'first_deployment.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+WSGI_APPLICATION = PROJECT_NAME + '.wsgi.application'
 
 
 # Password validation
@@ -121,3 +117,22 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+with open('ignore/project-settings.conf') as f:
+
+    lines = f.readlines()
+
+    SECRET_KEY = lines[0].strip()
+
+    settings_value = lines[1].strip()
+
+    if settings_value == "test":
+        from .settings_test import *
+
+    elif settings_value == "live":
+        from .settings_live import *
+
+    elif settings_value == "local":
+        from .settings_local import *
+
+    
