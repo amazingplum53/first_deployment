@@ -140,7 +140,7 @@ with open('ignore/project-settings.conf') as f:
     ALLOWED_HOSTS = []
 
     if len(lines) > 2:
-        domains = lines[2].strip().split(",") 
+        domains = lines[2].strip().split() 
 
         for domain in domains:
             ALLOWED_HOSTS.append(domain)
