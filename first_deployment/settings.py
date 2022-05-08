@@ -110,9 +110,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_ROOT = 'collect/'
-STATIC_URL = 'static/'
 
+STATIC_ROOT = PROJECT_ROOT_DIR / 'static'
+STATIC_URL = '/static/'
 
 
 # Default primary key field type
@@ -140,8 +140,8 @@ with open('ignore/project-settings.conf') as f:
     ALLOWED_HOSTS = []
 
     if len(lines) > 2:
-        domain = lines[2].strip() 
+        domains = lines[2].strip().split(",") 
 
-        if domain != "": 
+        for domain in domains:
             ALLOWED_HOSTS.append(domain)
 
